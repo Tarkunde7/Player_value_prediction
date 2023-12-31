@@ -7,6 +7,10 @@ from sklearn.model_selection import train_test_split
 from ball.Lib.dataclasses import dataclass
 from src.components.data_transformation import DataTransformation
 from src.components.data_transformation import DataTransformationConfig
+from src.components.model_trainer import modeltrainer
+from src.components.model_trainer import modeltrainerconfig
+
+os.environ["LOKY_MAX_CPU_COUNT"] = "4" #for increasing the number of cpu cores
 
 @dataclass
 class DataIngestionConfig:
@@ -65,3 +69,9 @@ if __name__=="__main__":
 
     data_transformation = DataTransformation()
     train_arr,test_arr,_= data_transformation.initiate_data_transformation(train_data,test_data)
+
+    modeltrainer = modeltrainer()
+    accuracy,model_name,models_report = modeltrainer.initiate_model_training(train_arr,test_arr)
+    for key,value in models_report.items():
+        print(f"{key} -> accuracy% -> {(value)*100}%")
+    print(f"From all the 8 models used on a data of shape(86542,21) the best model is {model_name} and its accuracy is : {(accuracy)*100}%")
